@@ -1,0 +1,3 @@
+:sqllite3:
+    :adapter: sqllite3
+    :dbfile: ":memory:"

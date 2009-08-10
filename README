@@ -1,0 +1,36 @@
+SkipValidations
+===============
+
+This plugin disables validations in your specs, so that you can skip validations for certain models in your test. You can choose models for which you want to turn your validations off.
+
+Example
+=======
+
+class User < ActiveRecord::Base
+	validates_presence_of :email
+	validates_presence_of :password
+end
+
+class SellRequest < ActiveRecord::Base
+	belongs_to :user
+	def self.match_requests(sell_request)
+		if matching_request?
+			sell_request.user.money -= tax
+			sell_request.user.save!
+		end
+	end
+end 
+
+Consider the above cooked up example. There might be situation where while testing you might want to skip the validations of user model altogether, which you are testing the functionality of match_requests. This is where the plugin will come in handy. Inside your rspec examples just do:
+
+it "should decrease user money" do
+  User.skip_validations(:user) {SellRequest.match_requests}
+  @sell_request.user.money.should == xx
+end
+
+You can specify multiple models as in:
+User.skip_validations(:user, :person)
+
+You can pass models as symbols or strings.
+
+Copyright (c) 2009 Balpreet Pankaj, released under the MIT license
